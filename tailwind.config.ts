@@ -42,10 +42,6 @@ const config = {
           DEFAULT: "hsl(var(--muted))",
           foreground: "hsl(var(--muted-foreground))",
         },
-        accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
-        },
         popover: {
           DEFAULT: "hsl(var(--popover))",
           foreground: "hsl(var(--popover-foreground))",
@@ -53,6 +49,21 @@ const config = {
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
+        },
+        brand: {
+          DEFAULT: "#f59e0b", // amber-500
+          light: "#fbbf24",   // yellow-400
+          dark: "#d97706",    // yellow-600
+        },
+        accent: {
+          DEFAULT: "#fbbf24", // yellow-400
+          light: "#fde047",   // yellow-300
+          dark: "#f59e0b",    // amber-500
+        },
+        surface: {
+          DEFAULT: "rgba(31, 41, 55, 0.6)",  // gray-800/60
+          light: "rgba(75, 85, 99, 0.3)",    // gray-700/30
+          dark: "rgba(0, 0, 0, 0.4)",        // black/40
         },
       },
       borderRadius: {
@@ -137,6 +148,11 @@ const config = {
         // Fade in and out
         "fade-in": "fade-in 0.4s",
         "fade-out": "fade-out 0.4s",
+      },
+      backgroundImage: {
+        'gradient-main': 'linear-gradient(to bottom right, #111827, #000000, #374151)',
+        'gradient-gold': 'linear-gradient(to right, #fbbf24, #f59e0b)',
+        'gradient-gold-alt': 'linear-gradient(to right, #f59e0b, #d97706)',
       },
     },
   },

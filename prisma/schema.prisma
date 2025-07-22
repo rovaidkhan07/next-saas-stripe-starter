@@ -6,8 +6,8 @@ generator client {
 }
 
 datasource db {
-  provider     = "postgresql"
-  url          = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 enum UserRole {
@@ -62,10 +62,15 @@ model User {
   accounts Account[]
   sessions Session[]
 
-  stripeCustomerId       String?   @unique @map(name: "stripe_customer_id")
-  stripeSubscriptionId   String?   @unique @map(name: "stripe_subscription_id")
-  stripePriceId          String?   @map(name: "stripe_price_id")
-  stripeCurrentPeriodEnd DateTime? @map(name: "stripe_current_period_end")
+  stripeCustomerId       String?         @unique @map(name: "stripe_customer_id")
+  stripeSubscriptionId   String?         @unique @map(name: "stripe_subscription_id")
+  stripePriceId          String?         @map(name: "stripe_price_id")
+  stripeCurrentPeriodEnd DateTime?       @map(name: "stripe_current_period_end")
+  Task                   Task[]
+  Timer                  Timer[]
+  UserSettings           UserSettings?
+  UserStreak             UserStreak?
+  DailyProgress          DailyProgress[]
 
   @@map(name: "users")
 }
@@ -77,4 +82,105 @@ model VerificationToken {
 
   @@unique([identifier, token])
   @@map(name: "verification_tokens")
+}
+
+model Task {
+  id          String    @id @default(cuid())
+  userId      String    @map(name: "user_id")
+  title       String
+  description String?
+  completed   Boolean   @default(false)
+  dueDate     DateTime? @map(name: "due_date")
+  priority    Int       @default(2) // 1: High, 2: Medium, 3: Low
+  createdAt   DateTime  @default(now()) @map(name: "created_at")
+  updatedAt   DateTime  @updatedAt @map(name: "updated_at")
+
+  subtasks Subtask[]
+  timers   Timer[]
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map(name: "tasks")
+}
+
+model Subtask {
+  id          String   @id @default(cuid())
+  taskId      String   @map(name: "task_id")
+  title       String
+  description String?
+  completed   Boolean  @default(false)
+  order       Int
+  createdAt   DateTime @default(now()) @map(name: "created_at")
+  updatedAt   DateTime @updatedAt @map(name: "updated_at")
+
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@index([taskId])
+  @@map(name: "subtasks")
+}
+
+model Timer {
+  id        String    @id @default(cuid())
+  userId    String    @map(name: "user_id")
+  taskId    String?   @map(name: "task_id")
+  startTime DateTime  @map(name: "start_time")
+  endTime   DateTime? @map(name: "end_time")
+  duration  Int? // in seconds
+  isBreak   Boolean   @default(false) @map(name: "is_break")
+  notes     String?
+  createdAt DateTime  @default(now()) @map(name: "created_at")
+
+  user User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  task Task? @relation(fields: [taskId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([taskId])
+  @@map(name: "timers")
+}
+
+model UserSettings {
+  id                    String   @id @default(cuid())
+  userId                String   @unique @map(name: "user_id")
+  theme                 String   @default("system") // light, dark, system
+  pomodoroWorkDuration  Int      @default(25) @map(name: "pomodoro_work_duration") // in minutes
+  pomodoroBreakDuration Int      @default(5) @map(name: "pomodoro_break_duration") // in minutes
+  dailyGoalMinutes      Int      @default(120) @map(name: "daily_goal_minutes")
+  weeklyGoalMinutes     Int      @default(600) @map(name: "weekly_goal_minutes")
+  enableNotifications   Boolean  @default(true) @map(name: "enable_notifications")
+  enableEmailReports    Boolean  @default(true) @map(name: "enable_email_reports")
+  timezone              String   @default("UTC")
+  language              String   @default("en")
+  createdAt             DateTime @default(now()) @map(name: "created_at")
+  updatedAt             DateTime @updatedAt @map(name: "updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map(name: "user_settings")
+}
+
+model UserStreak {
+  id            String   @id @default(cuid())
+  userId        String   @unique @map(name: "user_id")
+  currentStreak Int      @default(0) @map(name: "current_streak")
+  bestStreak    Int      @default(0) @map(name: "best_streak")
+  lastActive    DateTime @map(name: "last_active")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map(name: "user_streaks")
+}
+
+model DailyProgress {
+  id             String   @id @default(cuid())
+  userId         String   @map(name: "user_id")
+  date           DateTime
+  focusTime      Int      @default(0) @map(name: "focus_time") // in minutes
+  tasksCompleted Int      @default(0) @map(name: "tasks_completed")
+  goalReached    Boolean  @default(false) @map(name: "goal_reached")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+  @@index([userId])
+  @@map(name: "daily_progress")
 }

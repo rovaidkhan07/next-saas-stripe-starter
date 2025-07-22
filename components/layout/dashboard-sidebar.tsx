@@ -19,8 +19,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import ProjectSwitcher from "@/components/dashboard/project-switcher";
-import { UpgradeCard } from "@/components/dashboard/upgrade-card";
+// Temporarily commented out problematic imports
+// import ProjectSwitcher from "@/components/dashboard/project-switcher";
+// import { UpgradeCard } from "@/components/dashboard/upgrade-card";
 import { Icons } from "@/components/shared/icons";
 
 interface DashboardSidebarProps {
@@ -67,12 +68,16 @@ export function DashboardSidebar({ links }: DashboardSidebarProps) {
           <aside
             className={cn(
               isSidebarExpanded ? "w-[220px] xl:w-[260px]" : "w-[68px]",
-              "hidden h-screen md:block",
+              "hidden h-screen md:block bg-gradient-main backdrop-blur-lg/30 shadow-2xl shadow-black/40 border-r border-white/10",
             )}
           >
             <div className="flex h-full max-h-screen flex-1 flex-col gap-2">
               <div className="flex h-14 items-center p-4 lg:h-[60px]">
-                {isSidebarExpanded ? <ProjectSwitcher /> : null}
+                {isSidebarExpanded ? (
+                  <div className="text-sm font-semibold text-white tracking-wide uppercase">
+                    Dashboard
+                  </div>
+                ) : null}
 
                 <Button
                   variant="ghost"
@@ -102,7 +107,7 @@ export function DashboardSidebar({ links }: DashboardSidebarProps) {
                     className="flex flex-col gap-0.5"
                   >
                     {isSidebarExpanded ? (
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-400/70">
                         {section.title}
                       </p>
                     ) : (
@@ -118,12 +123,12 @@ export function DashboardSidebar({ links }: DashboardSidebarProps) {
                                 key={`link-${item.title}`}
                                 href={item.disabled ? "#" : item.href}
                                 className={cn(
-                                  "flex items-center gap-3 rounded-md p-2 text-sm font-medium hover:bg-muted",
+                                  "group flex items-center gap-3 rounded-lg px-2.5 py-2 text-sm font-medium transition-all duration-200",
                                   path === item.href
-                                    ? "bg-muted"
-                                    : "text-muted-foreground hover:text-accent-foreground",
+                                    ? "bg-accent/20 text-accent border border-accent/30"
+                                    : "text-gray-300 hover:text-white hover:bg-surface-light",
                                   item.disabled &&
-                                    "cursor-not-allowed opacity-80 hover:bg-transparent hover:text-muted-foreground",
+                                    "cursor-not-allowed opacity-50 hover:bg-transparent hover:text-gray-300",
                                 )}
                               >
                                 <Icon className="size-5" />
@@ -168,7 +173,7 @@ export function DashboardSidebar({ links }: DashboardSidebarProps) {
               </nav>
 
               <div className="mt-auto xl:p-4">
-                {isSidebarExpanded ? <UpgradeCard /> : null}
+                {isSidebarExpanded ? <div className="text-xs text-muted-foreground p-2">Upgrade Available</div> : null}
               </div>
             </div>
           </aside>
@@ -210,7 +215,7 @@ export function MobileSheetSidebar({ links }: DashboardSidebarProps) {
                   </span>
                 </Link>
 
-                <ProjectSwitcher large />
+                <div className="text-sm font-medium">Dashboard</div>
 
                 {links.map((section) => (
                   <section
@@ -233,12 +238,12 @@ export function MobileSheetSidebar({ links }: DashboardSidebarProps) {
                               }}
                               href={item.disabled ? "#" : item.href}
                               className={cn(
-                                "flex items-center gap-3 rounded-md p-2 text-sm font-medium hover:bg-muted",
+                                "group flex items-center gap-3 rounded-lg px-2.5 py-2 text-sm font-medium transition-all duration-200",
                                 path === item.href
-                                  ? "bg-muted"
-                                  : "text-muted-foreground hover:text-accent-foreground",
+                                  ? "bg-accent/20 text-accent border border-accent/30"
+                                  : "text-gray-300 hover:text-white hover:bg-surface-light",
                                 item.disabled &&
-                                  "cursor-not-allowed opacity-80 hover:bg-transparent hover:text-muted-foreground",
+                                  "cursor-not-allowed opacity-50 hover:bg-transparent hover:text-gray-300",
                               )}
                             >
                               <Icon className="size-5" />
@@ -257,7 +262,7 @@ export function MobileSheetSidebar({ links }: DashboardSidebarProps) {
                 ))}
 
                 <div className="mt-auto">
-                  <UpgradeCard />
+                  <div className="text-xs text-muted-foreground p-2">Upgrade Available</div>
                 </div>
               </nav>
             </div>

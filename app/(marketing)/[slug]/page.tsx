@@ -28,8 +28,8 @@ export async function generateMetadata({
   const { title, description } = page;
 
   return constructMetadata({
-    title: `${title} – SaaS Starter`,
-    description: description,
+    title: `${title} – ADHD AI`,
+    description,
   });
 }
 
