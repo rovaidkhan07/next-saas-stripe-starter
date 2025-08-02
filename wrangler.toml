@@ -1,0 +1,23 @@
+name = "next-saas-stripe-starter"
+main = "src/pages/_middleware.ts"
+compatibility_date = "2024-08-02"
+
+[build]
+  command = "npm install && npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+[build.upload]
+  format = "service-worker"
+
+# Uncomment if you're using R2 storage
+# [[r2_buckets]]
+# binding = "MY_BUCKET"
+# bucket_name = "next-saas-stripe-starter"
+
+# For Edge Functions (uncomment if needed)
+# [[functions]]
+# directory = ".next/server/pages"
+# build_command = "npm run build"
